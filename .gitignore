@@ -1,0 +1,31 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.env
+
+.vscode/
+
+venv/
+.venv/
+
+datos/
+
+*.log
+
+.git/
+
+# Caché de Hugging Face
+.cache/
+hf_cache/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.history/

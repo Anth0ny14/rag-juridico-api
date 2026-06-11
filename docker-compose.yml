@@ -1,0 +1,14 @@
+services:
+  rag-juridico:
+
+    image: rag-juridico
+
+    container_name: rag-juridico
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - C:\RAG_DATOS:/app/datos
+
+    restart: always

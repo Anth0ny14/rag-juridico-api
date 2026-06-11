@@ -1,0 +1,63 @@
+[
+    {
+        "id": "LOSEP",
+
+        "nombre_oficial":
+        "Ley Orgánica de Servicio Público",
+
+        "aliases": [
+
+            "LOSEP",
+
+            "Ley Orgánica de Servicio Público",
+
+            "Ley de Servicio Público"
+
+        ],
+
+        "fuentes": [
+
+            {
+                "nombre": "superbancos",
+
+                "url":
+                "https://www.superbancos.gob.ec/bancos/wp-content/uploads/downloads/2020/12/ley_organica_servicio_publico2.pdf"
+            }
+
+        ]
+    },
+
+    {
+        "id": "CODIGO_TRABAJO",
+
+        "nombre_oficial":
+        "Código del Trabajo",
+
+        "aliases": [
+
+            "Código del Trabajo",
+
+            "Codigo del Trabajo"
+
+        ],
+
+        "fuentes": []
+    },
+
+    {
+        "id": "COIP",
+
+        "nombre_oficial": "Código Orgánico Integral Penal",
+
+        "aliases": [
+            "COIP",
+
+            "Código Orgánico Integral Penal",
+
+            "Codigo Organico Integral Penal"
+
+        ],
+        "fuentes": []
+    }
+
+]
