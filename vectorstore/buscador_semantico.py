@@ -136,43 +136,90 @@ def buscar_fundamento_juridico(
     documento
 
 ):
+
     coleccion = obtener_coleccion()
 
-    resultados_tema = (
-        buscar_por_tema(
+    # ==========================
+    # BÚSQUEDA POR TEMA
+    # ==========================
+    if tema:
 
-            tema,
+        resultados_tema = (
+            buscar_por_tema(
 
-            documento
+                tema,
 
-        )
-    )
+                documento
 
-    if resultados_tema["documents"]:
-
-        distancia = (
-            resultados_tema[
-                "distances"
-            ][0]
+            )
         )
 
-        if distancia < 0.80:
+        if resultados_tema["documents"]:
+
+            distancia = (
+                resultados_tema[
+                    "distances"
+                ][0]
+            )
+
+            if distancia < 0.80:
+
+                return {
+
+                    "tipo":
+                    "tema",
+
+                    "resultado":
+                    {
+
+                        "document":
+                        resultados_tema[
+                            "documents"
+                        ][0],
+
+                        "metadata":
+                        resultados_tema[
+                            "metadatas"
+                        ][0]
+
+                    }
+
+                }
+
+    # ==========================
+    # BÚSQUEDA POR ARTÍCULO
+    # ==========================
+    if articulo:
+
+        resultados_articulo = (
+            buscar_articulo_exacto(
+
+                coleccion,
+
+                articulo,
+
+                documento
+
+            )
+        )
+
+        if resultados_articulo["documents"]:
 
             return {
 
                 "tipo":
-                "tema",
+                "articulo",
 
                 "resultado":
                 {
 
                     "document":
-                    resultados_tema[
+                    resultados_articulo[
                         "documents"
                     ][0],
 
                     "metadata":
-                    resultados_tema[
+                    resultados_articulo[
                         "metadatas"
                     ][0]
 
@@ -180,42 +227,9 @@ def buscar_fundamento_juridico(
 
             }
 
-    resultados_articulo = (
-        buscar_articulo_exacto(
-
-            coleccion,
-
-            articulo,
-
-            documento
-
-        )
-    )
-
-    if resultados_articulo["documents"]:
-
-        return {
-
-            "tipo":
-            "articulo",
-
-            "resultado":
-            {
-
-                "document":
-                resultados_articulo[
-                    "documents"
-                ][0],
-
-                "metadata":
-                resultados_articulo[
-                    "metadatas"
-                ][0]
-
-            }
-
-        }
-
+    # ==========================
+    # NO SE ENCONTRÓ NADA
+    # ==========================
     return None
 
 def buscar(query, top_k=2):

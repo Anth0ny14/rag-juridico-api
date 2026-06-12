@@ -114,9 +114,9 @@ def consulta_articulo(
 @app.get("/fundamento_juridico")
 def fundamento_juridico(
 
-    tema: str,
+    tema: str = None,
 
-    articulo: str,
+    articulo: str = None,
 
     documento: str = None,
 
