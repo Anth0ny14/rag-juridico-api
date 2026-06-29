@@ -44,6 +44,9 @@ from utilidades.resolver_norma import (
 from vectorstore.evaluador_retrieval import (
     retrieval_es_confiable
 )
+from vectorstore.validador_consistencia import (
+    validar_consistencia
+)
 
 inicio = time.time()
 
@@ -162,6 +165,10 @@ def fundamento_juridico(
 
         }
 
+    # =====================================
+    # RECUPERACIÓN DE CANDIDATOS
+    # =====================================
+
     resultado = buscar_fundamento_juridico(
 
         tema,
@@ -172,38 +179,117 @@ def fundamento_juridico(
 
     )
 
-    if not resultado:
+    resultado_articulo = resultado["articulo"]
+
+    resultado_tema = resultado["tema"]
+
+    # =====================================
+    # NO SE ENCONTRÓ NADA
+    # =====================================
+
+    if resultado_articulo is None and resultado_tema is None:
 
         return {
 
             "ok": False,
 
             "mensaje":
+
             "Fundamento jurídico no encontrado"
 
         }
 
-    metadata = resultado["resultado"]["metadata"]
+    # =====================================
+    # SOLO EXISTE ARTÍCULO
+    # =====================================
 
-    texto = resultado["resultado"]["document"]
+    if resultado_articulo is not None and resultado_tema is None:
+
+        resultado_final = resultado_articulo
+
+    # =====================================
+    # SOLO EXISTE TEMA
+    # =====================================
+
+    elif resultado_articulo is None and resultado_tema is not None:
+
+        resultado_final = resultado_tema
+
+    # =====================================
+    # EXISTEN LOS DOS
+    # =====================================
+
+    else:
+
+        articulo_articulo = (
+
+            resultado_articulo["metadata"]["articulo"]
+
+        )
+
+        articulo_tema = (
+
+            resultado_tema["metadata"]["articulo"]
+
+        )
+
+        # Ambos apuntan al mismo artículo
+
+        if articulo_articulo == articulo_tema:
+
+            print("\nARTÍCULO Y TEMA COINCIDEN")
+
+            resultado_final = resultado_articulo
+
+        # Existe conflicto
+
+        else:
+
+            print("\nCONFLICTO DETECTADO")
+
+            decision = validar_consistencia(
+
+                tema,
+
+                resultado_articulo,
+
+                resultado_tema
+            )
+            print( "\nDECISIÓN FINAL:", decision["ganador"] )
+
+            resultado_final = decision["resultado"]
+
+    # =====================================
+    # RESPUESTA FINAL
+    # =====================================
+
+    metadata = resultado_final["metadata"]
+
+    texto = resultado_final["document"]
 
     return {
 
         "ok": True,
 
         "tipo_recuperacion":
-        resultado["tipo"],
+
+        resultado_final["tipo"],
 
         "articulo":
+
         metadata["articulo"],
 
         "documento":
+
         metadata["titulo"],
 
         "texto":
+
         texto
 
     }
+    
+
 
 @app.get("/consulta")
 

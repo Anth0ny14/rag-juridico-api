@@ -68,6 +68,9 @@ def buscar_por_tema(
         query_embeddings=[
             embedding_query
         ],
+        where={
+            "titulo":documento
+        },
 
         n_results=top_k,
 
@@ -139,59 +142,19 @@ def buscar_fundamento_juridico(
 
     coleccion = obtener_coleccion()
 
-    # ==========================
-    # BÚSQUEDA POR TEMA
-    # ==========================
-    if tema:
+    resultado_articulo = None
 
-        resultados_tema = (
-            buscar_por_tema(
+    resultado_tema = None
 
-                tema,
 
-                documento
+    # =====================================
+    # BUSCAR POR ARTÍCULO
+    # =====================================
 
-            )
-        )
-
-        if resultados_tema["documents"]:
-
-            distancia = (
-                resultados_tema[
-                    "distances"
-                ][0]
-            )
-
-            if distancia < 0.80:
-
-                return {
-
-                    "tipo":
-                    "tema",
-
-                    "resultado":
-                    {
-
-                        "document":
-                        resultados_tema[
-                            "documents"
-                        ][0],
-
-                        "metadata":
-                        resultados_tema[
-                            "metadatas"
-                        ][0]
-
-                    }
-
-                }
-
-    # ==========================
-    # BÚSQUEDA POR ARTÍCULO
-    # ==========================
     if articulo:
 
         resultados_articulo = (
+
             buscar_articulo_exacto(
 
                 coleccion,
@@ -201,36 +164,89 @@ def buscar_fundamento_juridico(
                 documento
 
             )
+
         )
 
         if resultados_articulo["documents"]:
 
-            return {
+            resultado_articulo = {
 
-                "tipo":
-                "articulo",
+                "tipo": "articulo",
 
-                "resultado":
-                {
+                "document":
 
-                    "document":
-                    resultados_articulo[
-                        "documents"
-                    ][0],
+                    resultados_articulo["documents"][0],
 
-                    "metadata":
-                    resultados_articulo[
-                        "metadatas"
-                    ][0]
+                "metadata":
 
-                }
+                    resultados_articulo["metadatas"][0]
 
             }
 
-    # ==========================
-    # NO SE ENCONTRÓ NADA
-    # ==========================
-    return None
+
+    # =====================================
+    # BUSCAR POR TEMA
+    # =====================================
+
+    if tema:
+
+        resultados_tema = (
+
+            buscar_por_tema(
+
+                tema,
+
+                documento
+
+            )
+
+        )
+
+        if resultados_tema["documents"]:
+
+            distancia = (
+
+                resultados_tema["distances"][0]
+
+            )
+
+            if distancia < 0.80:
+
+                resultado_tema = {
+
+                    "tipo": "tema",
+
+                    "document":
+
+                        resultados_tema["documents"][0],
+
+                    "metadata":
+
+                        resultados_tema["metadatas"][0],
+
+                    "distancia":
+
+                        distancia
+
+                }
+
+
+    print("\n========== RESULTADO ARTÍCULO ==========")
+
+    print(resultado_articulo)
+
+    print("\n========== RESULTADO TEMA ==========")
+
+    print(resultado_tema)
+
+
+    return {
+
+        "articulo": resultado_articulo,
+
+        "tema": resultado_tema
+
+    }
 
 def buscar(query, top_k=2):
 
